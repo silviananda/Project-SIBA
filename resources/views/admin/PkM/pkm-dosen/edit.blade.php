@@ -1,0 +1,196 @@
+@extends('admin.layout.main')
+@section('content')
+
+<div class="right_col" role="main">
+	<div class="">
+		<div class="col-md-12 col-sm-12">
+			<div class="x_panel shadow-sm p-3 mb-5 bg-white rounded">
+				<div class="x_title">
+
+				    <h2>Form Ubah Data Pengabdian Kepada Masyarakat</h2>
+					<ul class="nav navbar-right panel_toolbox"></ul>
+					<div class="clearfix"></div>
+			    </div>
+
+                <form role="form" action="{{ route('pkm.dosen.update', $data_pkm->id) }}" method="post" enctype="multipart/form-data">
+					@method('patch')
+                    @csrf
+
+						<div class="form-group">
+							<input type="hidden" class="form-control" disabled="disabled" placeholder="Disabled Input" value="{!! Auth::user()->name !!}" name="{!! Auth::user()->kode_ps !!}">
+							@error('user_id')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+						</div>
+
+						<div class="form-group">
+                            <label for="exampleFormControlInput1">NIP Dosen<span class="danger" style="color: #DC143C;">*</span></label>
+                            <input type="text" oninput="autofill('dosen')" class="dosen form-control @error('nip') is-invalid @enderror" id="nip" placeholder="Masukkan NIP Dosen" name="nip" value="{{ $data_pkm->dosen->nip ?? null }}">
+                        
+							@error('nip')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+                            <span class="dosen danger" style="color: #DC143C;" id="ShowError"></span>
+                        </div>
+
+						<div class="form-group">
+							<label for="exampleFormControlInput1">Nama Dosen<span class="danger" style="color: #DC143C;">*</span></label>
+							<input type="text" class="dosen form-control @error('nama_dosen') is-invalid @enderror" placeholder="" id="nama_dosen" name="nama_dosen" value="{{ $data_pkm->dosen->nama_dosen ?? null }}">
+
+							@error('nama_dosen')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+						</div>
+
+						<span class="danger" style="color: #DC143C;" id="ShowError"></span>
+
+						<div class="form-group form-material row">
+							<input type="hidden" class="dosen form-control @error('dosen_id') is-invalid @enderror" id="dosen_id" placeholder="" name="dosen_id" value="{{ $data_pkm->dosen_id }}">
+                        </div>
+
+						<div class="form-group">
+							<label for="exampleFormControlInput1">Tema PKM<span class="danger" style="color: #DC143C;">*</span></label>
+							<input type="text" class="form-control @error('tema') is-invalid @enderror" id="exampleFormControlInput1" placeholder="" name="tema" value="{{ $data_pkm->tema }}">
+
+							@error('tema')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+						</div>
+
+                        @if ($data_pkm->pkm_mhs != null)
+                        <div id="mahasiswa_fields">
+                            @foreach ($data_pkm->pkm_mhs as $item)
+                            <div class="form-group mhs-{{$item->biodata_mhs->id ?? null}}">
+                                <div class="input-mahasiswa form-group">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlInput1">Nama Mahasiswa yang berpartisipasi</label>
+                                        <div class="input-group">
+                                            <input type="text" oninput="autofillmhs('mahasiswa1')" class="mahasiswa1 form-control @error('npm') is-invalid @enderror" id="npm" placeholder="Masukkan NIM Mahasiswa" name="npm" value="{{ $item->biodata_mhs->nama ?? null }}">
+
+                                            {{-- <span class="input-group-btn"><button class="btn btn-danger" type="button" onclick="remove_mahasiswa_fields();"> <i class="fa fa-minus"></i></span> --}}
+                                            <span class="input-group-btn">
+                                                <button
+                                                    data-room="{{ $data_pkm->id ?? null }}"
+                                                    data-mhs_id="{{ $item->biodata_mhs->id ?? null }}"
+                                                    class="btn btn-danger"
+                                                    type="button"
+                                                    onclick="remove_mahasiswa_fields_edit({{$item->biodata_mhs->id ?? null}});">
+                                                        <i class="fa fa-minus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+
+                                        <div class="form-group form-material row">
+                                            <input type="hidden" class="mahasiswa1 form-control" id="input-id" name="mhs_id[]" value="{{ $item->biodata_mhs->id ?? null }}">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                            </div>
+                        <div>
+                            <button class="btn btn-success" type="button" onclick="mahasiswa_fields();"><i class="fa fa-plus"></i></button>
+                        </div>
+                        @else
+                        <div id="mahasiswa_fields">
+                            @foreach ($data_pkm->pkm_mhs as $item)
+                            <div class="form-group mhs-{{$item->biodata_mhs->id ?? null}}">
+                                <div class="input-mahasiswa form-group">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlInput1">Nama Mahasiswa yang berpartisipasi</label>
+                                        <div class="input-group">
+                                            <input type="text" oninput="autofillmhs('mahasiswa1')" class="mahasiswa1 form-control @error('npm') is-invalid @enderror" id="npm" placeholder="Masukkan NIM Mahasiswa" name="npm" value="{{ $item->biodata_mhs->nama ?? null }}">
+
+                                            {{-- <span class="input-group-btn"><button class="btn btn-danger" type="button" onclick="remove_mahasiswa_fields();"> <i class="fa fa-minus"></i></span> --}}
+                                            <span class="input-group-btn">
+                                                <button
+                                                    data-room="{{ $data_pkm->id ?? null }}"
+                                                    data-mhs_id="{{ $item->biodata_mhs->id ?? null }}"
+                                                    class="btn btn-danger"
+                                                    type="button"
+                                                    onclick="remove_mahasiswa_fields_edit({{$item->biodata_mhs->id ?? null}});">
+                                                        <i class="fa fa-minus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+
+                                        <div class="form-group form-material row">
+                                            <input type="hidden" class="mahasiswa1 form-control" id="input-id" name="mhs_id[]" value="{{ $item->biodata_mhs->id ?? null }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                            </div>
+                        <div>
+                            <button class="btn btn-success" type="button" onclick="mahasiswa_fields();"><i class="fa fa-plus"></i></button>
+                        </div>
+
+                        @endif
+
+						<div class="form-group">
+							<label for="exampleFormControlInput1">Judul PKM<span class="danger" style="color: #DC143C;">*</span></label>
+							<input type="text" class="form-control @error('judul_pkm') is-invalid @enderror" id="exampleFormControlInput1" placeholder="" name="judul_pkm" value="{{ $data_pkm->judul_pkm }}">
+
+							@error('judul_pkm')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+						</div>
+
+                        <label for="exampleFormControlInput1">Sumber Dana</label>
+						<select name="sumber_dana_id" class="form-control @error('sumber_dana_id') is-invalid @enderror">
+							<option value="">Pilih Sumber Dana</option>
+								@foreach ($sumber_dana as $data)
+									<option value="{{ $data->id }}" {{$data->id == $data_pkm->sumber_dana_id ? 'selected' : ''}} >{{ $data->nama_sumber_dana}}</option>
+								@endforeach
+						</select>
+							@error('sumber_dana_id')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+                        <br>
+
+						<div class="form-group">
+							<label for="exampleFormControlInput1">Jumlah Dana</label>
+							<input type="text" class="form-control @error('jumlah_dana') is-invalid @enderror" id="exampleFormControlInput1" placeholder="" name="jumlah_dana" value="{{ $data_pkm->jumlah_dana }}">
+
+							@error('jumlah_dana')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+						</div>
+
+						<span class="danger" style="color: #DC143C;">*Input dengan format angka, contoh : 100000</span>
+                        <br>
+                        <span class="danger" style="color: #DC143C;">*Jika data kosong, input : 0</span>
+						
+						<br>
+						<br>
+
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Tahun Pkm<span class="danger" style="color: #DC143C;">*</span></label>
+                                <select name="tahun" class="form-control">
+                                <option value="">Pilih Tahun</option>
+                                    @for ($year = date('Y') - 7; $year < date('Y') + 10; $year++)
+                                        <option value="{{$year}}" {{$year == $data_pkm->tahun ? 'selected': ''}}>{{$year}}</option>
+                                    @endfor
+                                </select>
+                        </div>
+
+						<div class="form-group">
+							<label for="exampleFormControlInput1">Bukti Kerjasama</label>
+							<input type="file" class="form-control-file @error('softcopy') is-invalid @enderror" id="softcopy" name="softcopy" value="{{ $data_pkm->softcopy }}">
+                        
+							@error('softcopy')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="float: right;">Simpan</button>
+                        <a href="{{ route('pkm.dosen.index') }}" class="btn btn-danger" style="float: right;">Batal</a>
+
+					</form>
+			</div>
+        </div>
+	</div>
+</div>
+@stop

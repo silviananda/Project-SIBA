@@ -1,0 +1,154 @@
+kumpulan code :
+
+1. untuk nampilin data combobox di proses create
+
+<label for="exampleFormControlInput1">Jalur Masuk</label>
+						<select name="jalur_masuk_id" class="form-control @error('jalur_masuk_id') is-invalid @enderror">
+							<option value="kategori_jalur">Pilih Jalur Masuk</option>
+								@foreach ($kategori_jalur as $data)
+									<option value="{{ $data->id }}" {{ old('jalur_masuk_id') == $data->id ? 'selected' : null }} >{{ $data->jalur_masuk}}</option>
+								@endforeach
+						</select>
+							@error('jalur_masuk_id')
+								<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+						<br>
+
+2. JOIN 4 TABEL (TES DI MYSQL)
+SELECT penelitian_dosen.id, data_penelitian.judul_penelitian, data_penelitian.tahun_penelitian, dosen.nama_dosen 
+FROM penelitian_dosen 
+JOIN data_penelitian ON penelitian_dosen.data_penelitian_id = data_penelitian.id 
+JOIN dosen ON data_penelitian.dosen_id = dosen.dosen_id 
+JOIN biodata_mhs ON dosen.dosen_id = biodata_mhs.dosen_id WHERE penelitian_dosen.user_id = 17 
+
+
+3. Script untuk jalur masuk grafik udah bisa
+
+  <script>
+      Highcharts.chart('chart_jalur', {
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'Jalur Masuk'
+          },
+          xAxis: {
+              categories: {!!json_encode($data['x1'])!!},
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  text: 'Total (Orang)',
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' Orang'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor:
+                  Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Jumlah',
+              data: {!!json_encode($data['y1'])!!}
+          }]
+      });
+  </script>
+
+4. CARA COUNT UNTUK REKAP DATA DANA PKM
+
+$report = [];
+        $data_pkm = DanaPkm::select([
+            'data_pkm.sumber_dana_id', 'sumber_dana.nama_sumber_dana',
+            \DB::raw("(tahun) as tahun"),
+            \DB::raw('COUNT(data_pkm.id) as jumlah'),
+        ])
+        ->join('sumber_dana', 'data_pkm.sumber_dana_id', '=', 'sumber_dana.id')
+        ->where('user_id', Auth::user()->id)
+        ->groupBy('sumber_dana_id')
+        ->groupBy('tahun')
+        ->orderBy('tahun', 'desc')
+        ->get();
+
+        $data_pkm->each(function($item) use (&$report) {
+            $report[$item->tahun][$item->sumber_dana_id] = [
+                'count' => $item->jumlah
+            ];
+        });
+
+        $sumber_dana = $data_pkm->pluck('sumber_dana_id')->sortBy('sumber_dana_id')->unique();
+
+5. UNTUK HALAMAN DASHBOARD KALO COUNT BERDASARKAN ID_TINGKAT DAN GROUPBY DENGAN TAHUN :
+
+$artikel_dosen = KaryaIlmiahDsn::get();
+$publikasi = [];
+
+    $artikel_dosen = KaryaIlmiahDsn::select([
+        'artikel_dosen.id_tingkat', 'kategori_tingkat.id',
+        \DB::raw("(tahun) as tahun"),
+        \DB::raw('COUNT(artikel_dosen.id) as jumlah'),
+    ])
+    ->join('kategori_tingkat', 'artikel_dosen.id_tingkat', '=', 'kategori_tingkat.id')
+    ->where('user_id', Auth::user()->id)
+    ->groupBy('id_tingkat')
+    ->groupBY('tahun')
+    ->orderBy('tahun', 'desc')
+    ->get();
+
+    // $artikel_dosen->each(function($item) use (&$publikasi){
+    //     $publikasi[$item->tahun][$item->id_tingkat] = [
+    //         'count' => $item->jumlah
+    //     ];
+    // });
+
+    // $kategori_tingkat = $artikel_dosen->pluck('id_tingkat')->sortBy('id_tingkat')->unique();
+
+foreach($artikel_dosen as $ad){
+    $publikasi['x'][] = $ad->tahun;
+    $publikasi['y'][] = $ad->jumlah;
+}
+
+6. count akmal ajarin utk diagram batang
+
+ $kategori_jalur = KategoriJalur::get();
+
+         $data = [];
+
+         foreach($kategori_jalur as $jm){
+             $data['x'][] = $jm->jalur_masuk;
+             $data['y'][] = Mahasiswa::where('jalur_masuk_id', $jm->id)->count();
+         }
+
+
+7. count data pendaftar
+
+SELECT pendaftar.nama, pendaftar.tahun_masuk, kategori_jalur.jalur_masuk FROM pendaftar JOIN kategori_jalur ON kategori_jalur.id = pendaftar.jalur_masuk_id WHERE pendaftar.user_id = 17
+
+8. pembimbing ta
+
+SELECT biodata_mhs.nama, dosen.nama_dosen FROM biodata_mhs JOIN dosen ON dosen.dosen_id = biodata_mhs.doping1 WHERE biodata_mhs.user_id = 17
