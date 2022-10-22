@@ -37,7 +37,7 @@ class DosenTdkTetapController extends Controller
         }
         $dosen = $dosen->get();
         // return request();
-        return view('admin.dosen-tdk-tetap.biodata.biodata-tdk-tetap', compact('dosen'));
+        return view('admin.dosen-tdk-tetap.biodata.biodata-tdk-tetap', compact('kategori_jenis_dosen', 'dosen', 'jabatan_fungsional', 'kategori_pendidikan'));
     }
 
     public function create()

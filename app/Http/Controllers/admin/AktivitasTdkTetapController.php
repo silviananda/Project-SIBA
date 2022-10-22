@@ -31,7 +31,7 @@ class AktivitasTdkTetapController extends Controller
             $q->where('jenis_dosen', 2);
         })->where('aktivitas.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.dosen-tdk-tetap.aktivitas-tdk-tetap.aktivitas-tdk-tetap', compact('aktivitas'));
+        return view('admin.dosen-tdk-tetap.aktivitas-tdk-tetap.aktivitas-tdk-tetap', compact('aktivitas', 'kategori_jenis_dosen', 'dosen', 'kurikulum'));
     }
 
     public function create()

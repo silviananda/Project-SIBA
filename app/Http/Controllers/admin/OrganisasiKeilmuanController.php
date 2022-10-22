@@ -27,7 +27,7 @@ class OrganisasiKeilmuanController extends Controller
             ->select('organisasi.*', 'kategori_tingkat.nama_kategori', 'dosen.nip', 'dosen.nama_dosen')
             ->where('organisasi.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.upaya.organisasi.organisasi', compact('organisasi'));
+        return view('admin.upaya.organisasi.organisasi', compact('organisasi', 'dosen', 'kategori_tingkat'));
     }
 
     public function create()

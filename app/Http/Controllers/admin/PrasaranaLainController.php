@@ -36,7 +36,7 @@ class PrasaranaLainController extends Controller
         $kategori_kepemilikan = KategoriKepemilikan::get();
         $kategori_kondisi = KategoriKondisi::get();
 
-        return view('admin.prasarana.prasarana-lain.create', compact('kategori_kepemilikan', 'kategori_kondisi'));
+        return view('admin.prasarana.prasarana-lain.create', compact('data_prasarana_lain', 'kategori_kepemilikan', 'kategori_kondisi'));
     }
 
     public function store(Request $request)

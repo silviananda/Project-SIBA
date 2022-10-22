@@ -31,7 +31,7 @@ class PustakaController extends Controller
 
     public function create()
     {
-        return view('admin.sarana.pustaka.create');
+        return view('admin.sarana.pustaka.create', compact('pustaka'));
     }
 
     public function store(Request $request)

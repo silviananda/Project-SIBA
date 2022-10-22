@@ -25,14 +25,14 @@ class PraktikumController extends Controller
             ->select('praktikum.*', 'kurikulum.nama_mk')
             ->where('praktikum.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.kurikulum.praktikum.praktikum', compact('praktikum'));
+        return view('admin.kurikulum.praktikum.praktikum', compact('praktikum', 'kurikulum'));
     }
 
     public function create()
     {
         $kurikulum = Kurikulum::get();
 
-        return view('admin.kurikulum.praktikum.create', compact('kurikulum'));
+        return view('admin.kurikulum.praktikum.create', compact('praktikum', 'kurikulum'));
     }
 
     public function store(Request $request)

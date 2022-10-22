@@ -29,7 +29,7 @@ class RekognisiController extends Controller
             ->select('rekognisi.*', 'dosen.nama_dosen')
             ->where('rekognisi.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.upaya.rekognisi.rekognisi', compact('rekognisi'));
+        return view('admin.upaya.rekognisi.rekognisi', compact('rekognisi', 'dosen'));
     }
 
     public function create()

@@ -40,7 +40,7 @@ class PrasaranaController extends Controller
         $kategori_kepemilikan = KategoriKepemilikan::get();
         $kategori_kondisi = KategoriKondisi::get();
 
-        return view('admin.prasarana.prasarana.create', compact('kategori_kepemilikan', 'kategori_kondisi'));
+        return view('admin.prasarana.prasarana.create', compact('data_prasarana', 'kategori_kepemilikan', 'kategori_kondisi'));
     }
 
     public function store(Request $request)

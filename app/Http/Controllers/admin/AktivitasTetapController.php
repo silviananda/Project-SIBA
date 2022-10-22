@@ -31,7 +31,7 @@ class AktivitasTetapController extends Controller
             $q->where('jenis_dosen', 1);
         })->where('aktivitas.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.dosen-tetap.aktivitas.aktivitas-dosen-tetap', compact('aktivitas'));
+        return view('admin.dosen-tetap.aktivitas.aktivitas-dosen-tetap', compact('aktivitas', 'kategori_jenis_dosen', 'dosen', 'listmk1', 'listmk2'));
     }
 
     public function create()

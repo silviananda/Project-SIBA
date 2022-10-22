@@ -30,7 +30,7 @@ class PrestasiDosenController extends Controller
             ->select('prestasi_dosen.*', 'kategori_tingkat.nama_kategori', 'dosen.nip', 'dosen.nama_dosen')
             ->where('prestasi_dosen.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.upaya.prestasi.prestasi', compact('prestasi_dosen'));
+        return view('admin.upaya.prestasi.prestasi', compact('prestasi_dosen', 'dosen', 'kategori_tingkat'));
     }
 
     public function create()

@@ -32,7 +32,7 @@ class PeningkatanKegiatanController extends Controller
             ->select('kegiatan.*', 'kategori_peran.peran', 'dosen.nip', 'dosen.nama_dosen')
             ->where('kegiatan.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.peningkatan-kegiatan.halaman-peningkatan-kegiatan', compact('kegiatan'));
+        return view('admin.peningkatan-kegiatan.halaman-peningkatan-kegiatan', compact('kegiatan', 'kategori_peran', 'dosen'));
     }
 
     public function create()
@@ -40,7 +40,7 @@ class PeningkatanKegiatanController extends Controller
         $kategori_peran = KategoriPeran::get();
         $dosen = Dosen::get();
 
-        return view('admin.peningkatan-kegiatan.create', compact('kategori_peran', 'dosen'));
+        return view('admin.peningkatan-kegiatan.create', compact('kegiatan', 'kategori_peran', 'dosen'));
     }
 
     public function store(Request $request)

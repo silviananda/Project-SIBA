@@ -56,7 +56,7 @@
                                     <td>{{ date('Y', strtotime($value->tahun_masuk)) }}</td>
                                     <td>{{ $value->email }}</td>
                                     <td>{{ $value->dosen['nama_dosen'] ?? '-' }}</td>
-                                    <td>{{ $value->kategori_jalur['jalur_masuk'] ?? '-' }}</td>
+                                    <td>{{ $value->kategori_jalur['jalur_masuk'] }}</td>
                                     <td>{{ $value->updated_at }}</td>
                                     
                                     @if(request('withtrash') != 1)

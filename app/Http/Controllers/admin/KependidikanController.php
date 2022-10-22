@@ -70,7 +70,7 @@ class KependidikanController extends Controller
         $data_tenaga_kependidikan = TenagaKependidikan::get();
         $daftar_pendidikan = DaftarPendidikan::get();
         $data_unit_kerja = UnitKerja::get();
-        
+        // return "helooooooo";
         return view('admin.kependidikan.edit', compact('tenaga_kependidikan', 'data_tenaga_kependidikan', 'daftar_pendidikan', 'data_unit_kerja'));
     }
 

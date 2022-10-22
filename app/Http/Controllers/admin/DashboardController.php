@@ -124,7 +124,7 @@ class DashboardController extends Controller
             $publikasi['x'][] = $ad->tahun;
             $publikasi['y'][] = $ad->jumlah;
         }
-        //return $publikasi;
+        //   return $publikasi;
 
         //diagram lulusan
         $alumni = Alumni::get();
@@ -177,6 +177,6 @@ class DashboardController extends Controller
         // dd($publikasi);
 
         // return $biodata_mhs;
-        return view('admin.layout.dashboard', compact('publikasi', 'snmptn', 'sbmptn', 'smmptn', 'afirmasi', 'count_maba', 'count_lulusan', 'count_dosen', 'count_pkm', 'count_penelitian', 'count_kerjasama', 'jalur', 'alumni_array'));
+        return view('admin.layout.dashboard', compact('publikasi', 'snmptn', 'sbmptn', 'smmptn', 'afirmasi', /*'dataPoints',*/ 'count_maba', 'count_lulusan', 'count_dosen', 'count_pkm', 'count_penelitian', 'count_kerjasama', 'jalur', 'alumni_array'));
     }
 }

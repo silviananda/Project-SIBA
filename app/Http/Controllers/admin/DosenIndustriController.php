@@ -37,7 +37,7 @@ class DosenIndustriController extends Controller
         }
         $dosen = $dosen->get();
 
-        return view('admin.dosen-industri.biodata.biodata-dosen-industri', compact('dosen'));
+        return view('admin.dosen-industri.biodata.biodata-dosen-industri', compact('kategori_jenis_dosen', 'dosen', 'jabatan_fungsional', 'kategori_pendidikan'));
     }
 
     public function create()

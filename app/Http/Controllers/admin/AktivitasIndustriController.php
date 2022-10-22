@@ -32,7 +32,7 @@ class AktivitasIndustriController extends Controller
             $q->where('jenis_dosen', 3);
         })->where('aktivitas.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.dosen-industri.aktivitas.aktivitas-dosen-industri', compact('aktivitas'));
+        return view('admin.dosen-industri.aktivitas.aktivitas-dosen-industri', compact('aktivitas', 'kategori_jenis_dosen', 'dosen', 'listmk1', 'listmk2'));
     }
 
     public function create()

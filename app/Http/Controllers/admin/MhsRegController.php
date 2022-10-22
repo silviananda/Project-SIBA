@@ -43,7 +43,7 @@ class MhsRegController extends Controller
         }
         $biodata_mhs = $biodata_mhs->get();
 
-        return view('admin.mahasiswa.mhs-reguler.mhs-reguler', compact('biodata_mhs'));
+        return view('admin.mahasiswa.mhs-reguler.mhs-reguler', compact('biodata_mhs', 'dosen', 'kategori_jalur', 'kategori_status_mhs'));
     }
 
     public function create(Request $request)
@@ -56,7 +56,7 @@ class MhsRegController extends Controller
         $kategori_asal = KategoriAsal::get();
         $jenis_bimbingan = DB::table('jenis_bimbingan')->get();
 
-        return view('admin.mahasiswa.mhs-reguler.create', compact('dosen', 'kategori_jalur', 'kategori_status_mhs', 'kategori_asal', 'jenis_bimbingan', 'data_pembimbing_ta'));
+        return view('admin.mahasiswa.mhs-reguler.create', compact('biodata_dosen', 'dosen', 'kategori_jalur', 'kategori_status_mhs', 'kategori_asal', 'jenis_bimbingan', 'data_pembimbing_ta'));
     }
 
     public function store(Request $request)
@@ -150,7 +150,7 @@ class MhsRegController extends Controller
             $data_tahun = PembimbingTa::where('id', $item->id)->get();
         }
 
-        return view('admin.mahasiswa.mhs-reguler.edit', compact('biodata_mhs', 'dosen', 'kategori_jalur', 'jurusan', 'kategori_status_mhs', 'kategori_asal', 'data_pembimbing_ta', 'jenis_bimbingan'));
+        return view('admin.mahasiswa.mhs-reguler.edit', compact('biodata_mhs', 'dosen', 'kategori_jalur', 'jurusan', 'kategori_status_mhs', 'kategori_asal', 'data_pembimbing_ta', 'listdoping1', 'listdoping2', 'item', 'listjenis_id1', 'listjenis_id2', 'jenis_bimbingan', 'data_tahun'));
     }
 
     public function update(Request $request, MhsReguler $mhsReguler, $id)
@@ -268,6 +268,6 @@ class MhsRegController extends Controller
             $listdoping2[] = $data_pembimbing_ta['doping2'];
         }
 
-        return view('admin.mahasiswa.mhs-reguler.detail', compact('biodata_mhs', 'dosen', 'kategori_jalur', 'kategori_status_mhs', 'data_pembimbing_ta'));
+        return view('admin.mahasiswa.mhs-reguler.detail', compact('biodata_mhs', 'dosen', 'kategori_jalur', 'kategori_status_mhs', 'listdoping1', 'listdoping2', 'data_pembimbing_ta'));
     }
 }

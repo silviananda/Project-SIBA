@@ -23,12 +23,12 @@ class RuangController extends Controller
         $data_ruang = DB::table('data_ruang')
             ->where('user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.prasarana.ruangan.ruangan', compact('data_ruang'));
+        return view('admin.prasarana.ruangan.ruangan', ['data_ruang' => $data_ruang]);
     }
 
     public function create()
     {
-        return view('admin.prasarana.ruangan.create');
+        return view('admin.prasarana.ruangan.create', compact('data_ruang'));
     }
 
     public function store(Request $request)

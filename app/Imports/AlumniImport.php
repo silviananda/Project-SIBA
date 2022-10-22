@@ -28,7 +28,7 @@ class AlumniImport implements ToModel, WithHeadingRow
 
         $alumni = DB::table('alumni')->where('user_id', $login)->get();
 
-        $response = Http::get('http://ws.unsyiah.ac.id/webservice/ws_siba/cSiba/alumni/npm/' . $nim . '/key/021infsiba/');
+        $response = Http::get('');
 
         try {
             $xml = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);

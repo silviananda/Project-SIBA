@@ -34,13 +34,15 @@ class MhsAsingController extends Controller
 
     public function index()
     {
+
+
         $mhs_asing = MhsReguler::with(['data_pembimbing_ta', 'kategori_jalur', 'data_pembimbing_ta.dosen'])->where('id_status', '3')->where('user_id', Auth::user()->kode_ps);
         if (request('withtrash') == 1) {
             $mhs_asing = $mhs_asing->whereNotNull('deleted_at')->withTrashed();
         }
         $mhs_asing = $mhs_asing->get();
 
-        return view('admin.mahasiswa-asing.mhs-asing.mhs-asing', compact('mhs_asing'));
+        return view('admin.mahasiswa-asing.mhs-asing.mhs-asing', compact('mhs_asing', 'dosen'));
     }
 
     public function create()
@@ -53,7 +55,7 @@ class MhsAsingController extends Controller
         $kategori_asal = KategoriAsal::get();
         $jenis_bimbingan = DB::table('jenis_bimbingan')->get();
 
-        return view('admin.mahasiswa-asing.mhs-asing.create', compact('dosen', 'kategori_jalur', 'kategori_status_mhs', 'kategori_asal', 'jenis_bimbingan', 'data_pembimbing_ta'));
+        return view('admin.mahasiswa-asing.mhs-asing.create', compact('biodata_dosen', 'dosen', 'kategori_jalur', 'kategori_status_mhs', 'kategori_asal', 'jenis_bimbingan', 'data_pembimbing_ta'));
     }
 
     public function store(Request $request)
@@ -142,7 +144,7 @@ class MhsAsingController extends Controller
             $data_tahun = PembimbingTa::where('id', $item->id)->get();
         }
 
-        return view('admin.mahasiswa-asing.mhs-asing.edit', compact('mhs_asing', 'dosen', 'kategori_jalur', 'jurusan', 'kategori_status_mhs', 'kategori_asal', 'data_pembimbing_ta', 'jenis_bimbingan'));
+        return view('admin.mahasiswa-asing.mhs-asing.edit', compact('mhs_asing', 'dosen', 'kategori_jalur', 'jurusan', 'kategori_status_mhs', 'kategori_asal', 'data_pembimbing_ta', 'listdoping1', 'listdoping2', 'item', 'listjenis_id1', 'listjenis_id2', 'jenis_bimbingan', 'data_tahun'));
     }
 
     public function update(Request $request, MhsReguler $mhsReguler, $id)
@@ -254,6 +256,6 @@ class MhsAsingController extends Controller
             $listdoping2[] = $data_pembimbing_ta['doping2'];
         }
 
-        return view('admin..mahasiswa-asing.mhs-asing.detail', compact('mhs_asing', 'dosen', 'kategori_jalur', 'kategori_status_mhs', 'data_pembimbing_ta'));
+        return view('admin..mahasiswa-asing.mhs-asing.detail', compact('mhs_asing', 'dosen', 'kategori_jalur', 'kategori_status_mhs', 'listdoping1', 'listdoping2', 'data_pembimbing_ta'));
     }
 }

@@ -24,7 +24,7 @@ class DosenImport implements ToModel, WithHeadingRow
 
         $nip = explode("'", $row['nip'])[0];
 
-        $response = Http::get('http://ws.unsyiah.ac.id/webservice/ws_siba/cSiba/dosen/nip/' . $nip . '/key/021infsiba/');
+        $response = Http::get('');
         try {
             $xml = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);
         } catch (\Throwable $th) {

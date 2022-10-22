@@ -28,7 +28,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow
         // dd($login);
         $npm = explode("'", $row['npm'])[0];
 
-        $response = Http::get('http://ws.unsyiah.ac.id/webservice/ws_siba/cSiba/mhs/npm/' . $npm . '/key/021infsiba/');
+        $response = Http::get('');
 
         try {
             $xml = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);

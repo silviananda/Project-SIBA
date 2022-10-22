@@ -29,7 +29,7 @@ class PengajaranController extends Controller
             ->select('mengajar.*', 'dosen.nama_dosen', 'dosen.nip', 'kurikulum.nama_mk')
             ->where('mengajar.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.dosen-tetap.pengajaran.pengajaran-dosen', compact('mengajar'));
+        return view('admin.dosen-tetap.pengajaran.pengajaran-dosen', compact('mengajar', 'dosen', 'kurikulum'));
     }
 
     public function create()

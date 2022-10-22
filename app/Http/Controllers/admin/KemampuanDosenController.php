@@ -28,7 +28,7 @@ class KemampuanDosenController extends Controller
             ->select('kemampuan_dosen.*', 'dosen.nama_dosen')->where('jenis_dosen', '1')
             ->where('kemampuan_dosen.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.upaya.kemampuan.kemampuan-dosen', compact('kemampuan_dosen'));
+        return view('admin.upaya.kemampuan.kemampuan-dosen', compact('kemampuan_dosen', 'dosen', 'jenis_dosen'));
     }
 
     public function create()
@@ -37,7 +37,7 @@ class KemampuanDosenController extends Controller
         $kategori_pendidikan = KategoriPendidikan::get();
         $dosen = Dosen::get();
         $kategori_jenis_dosen = JenisDosen::get();
-        return view('admin.upaya.kemampuan.create', compact('kemampuan_dosen', 'dosen', 'kategori_jenis_dosen', 'kategori_pendidikan'));
+        return view('admin.upaya.kemampuan.create', compact('kemampuan_dosen', 'dosen', 'jenis_dosen', 'kategori_pendidikan'));
     }
 
     public function store(Request $request)
@@ -69,7 +69,7 @@ class KemampuanDosenController extends Controller
         $dosen = Dosen::get();
         $kategori_jenis_dosen = JenisDosen::get();
 
-        return view('admin.upaya.kemampuan.edit', compact('kemampuan_dosen', 'dosen', 'kategori_jenis_dosen', 'kategori_pendidikan'));
+        return view('admin.upaya.kemampuan.edit', compact('kemampuan_dosen', 'dosen', 'jenis_dosen'));
     }
 
     public function update(Request $request, Kemampuan $kemampuan, $id)

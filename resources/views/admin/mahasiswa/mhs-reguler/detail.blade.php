@@ -71,7 +71,7 @@
                                                 <tr>
                                                     <td class="noBorder"> Tempat Tinggal Asal</td>
                                                     <td class="noBorder">
-                                                        <a id="inline-firstname" data-type="text" data-pk="1" data-placement="right" data-placeholder="Required" data-title="Enter your firstname"></a>{{ $biodata_mhs->kategori_asal['asal'] ?? '-' }}
+                                                        <a id="inline-firstname" data-type="text" data-pk="1" data-placement="right" data-placeholder="Required" data-title="Enter your firstname"></a>{{ $biodata_mhs->kategori_asal['asal'] }}
                                                     </td>
                                                 </tr>
                                                 <tr>
