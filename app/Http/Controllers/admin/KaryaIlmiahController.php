@@ -16,6 +16,7 @@ use App\Notifications\Deadline;
 use Carbon\Carbon;
 use Validator;
 use App\Notifications\VerifikasiDosen;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class KaryaIlmiahController extends Controller
 {
@@ -31,9 +32,10 @@ class KaryaIlmiahController extends Controller
     public function index()
     {
         // $artikel_dosen = KaryaIlmiahDsn::with('dosen', 'kategori_tingkat', 'publikasi')->where('artikel_dosen.user_id', Auth::user()->kode_ps)->get();
-        $list_dosen = DB::table('dosen')->where('dosen.user_id', Auth::user()->kode_ps)->get();
+        // $list_dosen = DB::table('dosen')->where('dosen.user_id', Auth::user()->kode_ps)->get();
+        $list_dosen = KaryaIlmiahDsn::with('dosen', 'kategori_tingkat', 'publikasi')->where('artikel_dosen.user_id', Auth::user()->kode_ps)->get();
 
-        return view('admin.luaran.karya-ilmiah.karya', compact('list_dosen', 'artikel_dosen'));
+        return view('admin.luaran.karya-ilmiah.karya', compact('list_dosen'));
     }
 
     public function create()
@@ -125,11 +127,21 @@ class KaryaIlmiahController extends Controller
 
     public function run()
     {
-        $artikel_dosen = new Process(['python', public_path() . '/file/python.py']);
-        $artikel_dosen->run();
-        return $artikel_dosen->getOutput();
+        $process = new Process(["python3", "/home/koinworks/MyDocs/training/Project-SIBA/resources/python/scrap_main.py"]);
+        $process->setTimeout(300);
+        $process->run();
 
-        // return view('admin.luaran.karya-ilmiah.scrap', compact('artikel_dosen'));
+        if (!$process->isSuccessful()) {
+            echo "error";
+            throw new ProcessFailedException($process);
+        }
+
+        // scraping utama
+        $valstr = $process->getOutput();
+        $valjson = json_decode(strval($valstr), true);
+        echo "<pre>valjson:";
+        var_dump($valjson);
+        echo "</pre>";
     }
 
     public function save(Request $request)
