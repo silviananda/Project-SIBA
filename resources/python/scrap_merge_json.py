@@ -79,12 +79,13 @@ fungsi proses untuk scraping data bersih
 data detail title dokumen dari
 halaman profil utama google scholar
 """
-def ambil_data_detail_title(page, type_doc, dict_detail_title):
+def ambil_data_detail_title(page, dict_detail_title):
+    type_doc = ['Journal','Conference']
     soup = BeautifulSoup(page.content, 'html.parser')
-    sec = random.randint(1,100)
-    print('Akan break dalam ' + str(sec) + ' detik..')
+    sec = random.randint(1,60)
+    # print('Akan break dalam ' + str(sec) + ' detik..')
     time.sleep(sec)
-    print('====================')
+    # print('====================')
 
     detail_title = []
     details = soup.find_all('div', class_='gs_scl')
@@ -94,8 +95,8 @@ def ambil_data_detail_title(page, type_doc, dict_detail_title):
         val = get_detail.find('div', class_='gsc_oci_value').text.strip()
         detail_title.append(val)
 
-    print(detail_title)
-    print('====================')
+    # print(detail_title)
+    # print('====================')
 
     #tes get value of cited by
     if ('Total citations' in detail_title):
@@ -107,13 +108,13 @@ def ambil_data_detail_title(page, type_doc, dict_detail_title):
         get_idx_detail_title += 1
         detail_title[get_idx_detail_title] = " ".join(cited_val_num)
 
-        print(detail_title)
-        print('2 ==================== 2')
+        # print(detail_title)
+        # print('2 ==================== 2')
     #end tes get value of cited by
 
     #intersection(sama) value antara 2 list untuk tipedoc jurnal/konferensi
     return_type_doc = (list(set(detail_title).intersection(type_doc)))
-    print(return_type_doc)
+    # print(return_type_doc)
 
     # Convert list of items to a string value
     final_str = ''.join(return_type_doc)
@@ -121,8 +122,8 @@ def ambil_data_detail_title(page, type_doc, dict_detail_title):
     if (final_str == ''):
         final_str = 'Tidak Diketahui'
 
-    print(final_str	)
-    print('====================')
+    # print(final_str	)
+    # print('====================')
     #dict_detail_title['Document_Type'] = [final_str]
     dict_detail_title['Document Type'].append(final_str)
 
@@ -148,11 +149,11 @@ def ambil_data_detail_title(page, type_doc, dict_detail_title):
     for item in list_difference:
         dict_detail_title[item].append('None')
 
-    print(temp_keys)
-    print('====================')
+    # print(temp_keys)
+    # print('====================')
     del temp_keys
-    print(list_difference)
-    print('====================')
+    # print(list_difference)
+    # print('====================')
     del list_difference
 
     return dict_detail_title

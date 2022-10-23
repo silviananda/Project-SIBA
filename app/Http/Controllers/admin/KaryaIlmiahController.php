@@ -142,6 +142,68 @@ class KaryaIlmiahController extends Controller
         echo "<pre>valjson:";
         var_dump($valjson);
         echo "</pre>";
+
+        // scraping detail
+        $dict_detail_title = [];
+        $type_doc = ['Journal', 'Conference'];
+
+        foreach($valjson as $val) {
+            $link_detail = $val["Link Detail Title"];
+            $name = $val["Name"];
+
+            if ($link_detail == 'None') {
+                $item_detail = array(
+                    "Name" => $name,
+                    "Publication date" => "None",
+                    "Document Type" => "None",
+                    "Authors" => "None",
+                    "Name Of Document Type" => "None",
+                    "Volume" => "None",
+                    "Issue" => "None",
+                    "Pages" => "None",
+                    "Publisher" => "None",
+                    "Description" => "None",
+                    "Total citations" => "None"
+                );
+            }
+            else {
+                $result = 'https://scholar.google.co.id'.$link_detail;
+
+                $process = new Process(["python3", "/home/koinworks/MyDocs/training/Project-SIBA/resources/python/scrap_detail.py", $result]);
+                $process->setTimeout(300);
+                $process->run();
+                if (!$process->isSuccessful()) {
+                    echo "error";
+                    throw new ProcessFailedException($process);
+                }
+
+                // TODO : jika break, maka simpan dari yang sudah ada
+
+                $valdetailstr = $process->getOutput();
+                $valdetailjson = json_decode(strval($valdetailstr), true);
+                echo "<pre>valjson:";
+                var_dump($valdetailjson);
+                echo "</pre>";
+
+                $item_detail = array(
+                    "Name" => $name,
+                    "Publication date" => $valdetailjson["Publication date"],
+                    "Document Type" => $valdetailjson["Document Type"],
+                    "Authors" => $valdetailjson["Authors"],
+                    "Name Of Document Type" => $valdetailjson["Name Of Document Type"],
+                    "Volume" => $valdetailjson["Volume"],
+                    "Issue" => $valdetailjson["Issue"],
+                    "Pages" => $valdetailjson["Pages"],
+                    "Publisher" => $valdetailjson["Publisher"],
+                    "Description" => $valdetailjson["Description"],
+                    "Total citations" => $valdetailjson["Total citations"]
+                );
+
+            }
+
+            array_push($dict_detail_title, $item_detail);
+        }
+        
     }
 
     public function save(Request $request)
