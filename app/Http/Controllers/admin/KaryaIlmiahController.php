@@ -127,7 +127,7 @@ class KaryaIlmiahController extends Controller
 
     public function run()
     {
-        $process = new Process(["python3", "/home/koinworks/MyDocs/training/Project-SIBA/resources/python/scrap_main.py"]);
+        $process = new Process(["python3",  env("LOCAL_URL")."resources/python/scrap_main.py"]);
         $process->setTimeout(300);
         $process->run();
 
@@ -169,7 +169,7 @@ class KaryaIlmiahController extends Controller
             else {
                 $result = 'https://scholar.google.co.id'.$link_detail;
 
-                $process = new Process(["python3", "/home/koinworks/MyDocs/training/Project-SIBA/resources/python/scrap_detail.py", $result]);
+                $process = new Process(["python3", env("LOCAL_URL")."resources/python/scrap_detail.py", $result]);
                 $process->setTimeout(300);
                 $process->run();
                 if (!$process->isSuccessful()) {
