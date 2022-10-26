@@ -139,9 +139,6 @@ class KaryaIlmiahController extends Controller
         // scraping utama
         $valstr = $process->getOutput();
         $valjson = json_decode(strval($valstr), true);
-        echo "<pre>valjson:";
-        var_dump($valjson);
-        echo "</pre>";
 
         // scraping detail
         $dict_detail_title = [];
@@ -181,22 +178,19 @@ class KaryaIlmiahController extends Controller
 
                 $valdetailstr = $process->getOutput();
                 $valdetailjson = json_decode(strval($valdetailstr), true);
-                echo "<pre>valjson:";
-                var_dump($valdetailjson);
-                echo "</pre>";
 
                 $item_detail = array(
-                    "Name" => $name,
-                    "Publication date" => $valdetailjson["Publication date"],
-                    "Document Type" => $valdetailjson["Document Type"],
-                    "Authors" => $valdetailjson["Authors"],
-                    "Name Of Document Type" => $valdetailjson["Name Of Document Type"],
-                    "Volume" => $valdetailjson["Volume"],
-                    "Issue" => $valdetailjson["Issue"],
-                    "Pages" => $valdetailjson["Pages"],
-                    "Publisher" => $valdetailjson["Publisher"],
-                    "Description" => $valdetailjson["Description"],
-                    "Total citations" => $valdetailjson["Total citations"]
+                    "name" => $name,
+                    "pubdate" => $valdetailjson["Publication date"],
+                    "doctype" => $valdetailjson["Document Type"],
+                    "authors" => $valdetailjson["Authors"],
+                    "name_of_doctype" => $valdetailjson["Name Of Document Type"],
+                    "volume" => $valdetailjson["Volume"],
+                    "issue" => $valdetailjson["Issue"],
+                    "pages" => $valdetailjson["Pages"],
+                    "publisher" => $valdetailjson["Publisher"],
+                    "description" => $valdetailjson["Description"],
+                    "total_citations" => $valdetailjson["Total citations"]
                 );
 
             }
@@ -204,6 +198,10 @@ class KaryaIlmiahController extends Controller
             array_push($dict_detail_title, $item_detail);
         }
         
+        // TODO : bedakan antara yang sudah ada di database dan yang belum ada
+        // akan ada 2 var : untuk dipilih dan yang sudah ada di database
+        // yang sudah ada di database tidak bisa dipilih lagi
+        return view('admin.luaran.karya-ilmiah.daftar-detail', compact('dict_detail_title'));
     }
 
     public function save(Request $request)
