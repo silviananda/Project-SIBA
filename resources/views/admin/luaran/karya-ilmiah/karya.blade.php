@@ -50,7 +50,7 @@
                                     <th scope="row"> {{ $loop->iteration }}</th>
                                     <td>{{ $value->nip}}</td>
                                     <td>{{ $value->nama_dosen}}</td>
-                                    <td><a href="{{ $value->link}}" target="_blank">{{ $value->link ?? "-"}}</a></td>
+                                    <td><a href="{{ $value->link_scholar}}" target="_blank">{{ $value->link_scholar ?? "-"}}</a></td>
 
                                     <td>
                                         <form action={{ route('luaran.karya-ilmiah.run') }} method="post">
