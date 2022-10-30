@@ -656,6 +656,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/{id}/edit-detail', 'admin\KaryaIlmiahController@edit_detail')->name('edit-detail');
             Route::patch('/update-detail/{id}', 'admin\KaryaIlmiahController@update_detail')->name('update-detail');
             Route::delete('/delete-detail/{id}', 'admin\KaryaIlmiahController@destroy_detail')->name('delete-detail');
+            Route::post('/submit', 'admin\KaryaIlmiahController@submit')->name('submit');
 
             Route::prefix('import')->name('import.')->group(function () {
                 Route::get('/', 'admin\PublikasiImportController@index')->name('index');

@@ -32,8 +32,8 @@ class KaryaIlmiahController extends Controller
     public function index()
     {
         // $artikel_dosen = KaryaIlmiahDsn::with('dosen', 'kategori_tingkat', 'publikasi')->where('artikel_dosen.user_id', Auth::user()->kode_ps)->get();
-        // $list_dosen = DB::table('dosen')->where('dosen.user_id', Auth::user()->kode_ps)->get();
-        $list_dosen = KaryaIlmiahDsn::with('dosen', 'kategori_tingkat', 'publikasi')->where('artikel_dosen.user_id', Auth::user()->kode_ps)->get();
+        $list_dosen = DB::table('dosen')->where('dosen.user_id', Auth::user()->kode_ps)->get();
+        // $list_dosen = KaryaIlmiahDsn::with('dosen', 'kategori_tingkat', 'publikasi')->where('artikel_dosen.user_id', Auth::user()->kode_ps)->get();
 
         return view('admin.luaran.karya-ilmiah.karya', compact('list_dosen'));
     }
@@ -125,9 +125,11 @@ class KaryaIlmiahController extends Controller
     //     return view('admin.luaran.karya-ilmiah.detail', compact('link'));
     // }
 
-    public function run()
+    public function run(Request $request)
     {
-        $process = new Process(["python3",  env("LOCAL_URL")."resources/python/scrap_main.py"]);
+        $link = $request->link;
+        $dosen_id = $request->dosen_id;
+        $process = new Process(["python3",  env("LOCAL_URL")."resources/python/scrap_main.py", $link]);
         $process->setTimeout(300);
         $process->run();
 
@@ -139,9 +141,6 @@ class KaryaIlmiahController extends Controller
         // scraping utama
         $valstr = $process->getOutput();
         $valjson = json_decode(strval($valstr), true);
-        echo "<pre>valjson:";
-        var_dump($valjson);
-        echo "</pre>";
 
         // scraping detail
         $dict_detail_title = [];
@@ -150,21 +149,25 @@ class KaryaIlmiahController extends Controller
         foreach($valjson as $val) {
             $link_detail = $val["Link Detail Title"];
             $name = $val["Name"];
+            $title = $val["Document"];
+            $item_detail = new KaryaIlmiahDsn;
+
 
             if ($link_detail == 'None') {
-                $item_detail = array(
-                    "Name" => $name,
-                    "Publication date" => "None",
-                    "Document Type" => "None",
-                    "Authors" => "None",
-                    "Name Of Document Type" => "None",
-                    "Volume" => "None",
-                    "Issue" => "None",
-                    "Pages" => "None",
-                    "Publisher" => "None",
-                    "Description" => "None",
-                    "Total citations" => "None"
-                );
+                $item_detail->in_db = False;
+                $item_detail->nama = $name;
+                $item_detail->judul = $title;
+                $item_detail->tahun = "None";
+                $item_detail->doc_type = "None";
+                $item_detail->authors = "None";
+                $item_detail->name_of_doctype = "None";
+                $item_detail->volume = "None";
+                $item_detail->issue = "None";
+                $item_detail->pages = "None";
+                $item_detail->publisher = "None";
+                $item_detail->description = "None";
+                $item_detail->total_citation = "None";
+
             }
             else {
                 $result = 'https://scholar.google.co.id'.$link_detail;
@@ -177,33 +180,69 @@ class KaryaIlmiahController extends Controller
                     throw new ProcessFailedException($process);
                 }
 
-                // TODO : jika break, maka simpan dari yang sudah ada
-
                 $valdetailstr = $process->getOutput();
                 $valdetailjson = json_decode(strval($valdetailstr), true);
-                echo "<pre>valjson:";
-                var_dump($valdetailjson);
-                echo "</pre>";
 
-                $item_detail = array(
-                    "Name" => $name,
-                    "Publication date" => $valdetailjson["Publication date"],
-                    "Document Type" => $valdetailjson["Document Type"],
-                    "Authors" => $valdetailjson["Authors"],
-                    "Name Of Document Type" => $valdetailjson["Name Of Document Type"],
-                    "Volume" => $valdetailjson["Volume"],
-                    "Issue" => $valdetailjson["Issue"],
-                    "Pages" => $valdetailjson["Pages"],
-                    "Publisher" => $valdetailjson["Publisher"],
-                    "Description" => $valdetailjson["Description"],
-                    "Total citations" => $valdetailjson["Total citations"]
-                );
+                $item_detail->in_db = False;
+                $item_detail->nama = $name;
+                $item_detail->judul = $title;
+                $item_detail->tahun = $valdetailjson["Publication date"][0];
+                $item_detail->doc_type = $valdetailjson["Document Type"][0];
+                $item_detail->authors = $valdetailjson["Authors"][0];
+                $item_detail->name_of_doctype = $valdetailjson["Name Of Document Type"][0];
+                $item_detail->volume = $valdetailjson["Volume"][0];
+                $item_detail->issue = $valdetailjson["Issue"][0];
+                $item_detail->pages = $valdetailjson["Pages"][0];
+                $item_detail->publisher = $valdetailjson["Publisher"][0];
+                $item_detail->description = $valdetailjson["Description"][0];
+                $item_detail->total_citation = $valdetailjson["Total citations"][0];
 
             }
 
             array_push($dict_detail_title, $item_detail);
         }
-        
+
+        // DAFTAR ARTIKEL YANG SUDAH ADA DI DATABASE
+        $artikel_res = KaryaIlmiahDsn::get();
+        $title_db = [];
+        foreach ($artikel_res as $artikel) {
+            array_push($title_db, $artikel->judul);
+        }
+
+        foreach($dict_detail_title as $dict) {
+            if (in_array($dict->judul, $title_db)) {
+                $dict->in_db = True;
+            }
+        }
+        return view('admin.luaran.karya-ilmiah.daftar-detail', compact('dict_detail_title', 'dosen_id'));
+    }
+
+    public function submit(Request $request) {
+        $dosen_id = $request->dosen_id;
+
+        foreach ($request->artikel as $number => $val) {
+            // siapkan value untuk diinput ke database
+            $idx = $number - 1;
+            $artikel_dosen = new KaryaIlmiahDsn();
+            $artikel_dosen->user_id = Auth::user()->kode_ps;
+            $artikel_dosen->dosen_id = $dosen_id;
+            $artikel_dosen->nama = $request->nama[$idx];
+            $artikel_dosen->judul = $request->judul[$idx];
+            $artikel_dosen->tahun = $request->tahun[$idx];
+            $artikel_dosen->doc_type = $request->doc_type[$idx];
+            $artikel_dosen->authors = $request->authors[$idx];
+            $artikel_dosen->name_of_doctype = $request->name_of_doctype[$idx];
+            $artikel_dosen->volume = $request->volume[$idx];
+            $artikel_dosen->issue = $request->issue[$idx];
+            $artikel_dosen->pages = $request->pages[$idx];
+            $artikel_dosen->publisher = $request->publisher[$idx];
+            $artikel_dosen->description = $request->description[$idx];
+            $artikel_dosen->total_citation = $request->total_citation[$idx];
+            $artikel_dosen->save();
+        }
+
+        return redirect('/luaran/karya-ilmiah/'.$dosen_id.'/detail')->with(['added' => 'Detail Karya Ilmiah berhasil ditambahkan!']);
+
     }
 
     public function save(Request $request)
@@ -247,7 +286,9 @@ class KaryaIlmiahController extends Controller
 
         $artikel_dosen = KaryaIlmiahDsn::with('dosen', 'kategori_tingkat', 'publikasi')->where('dosen_id', $list_dosen->dosen_id)->get();
 
-        return view('admin.luaran.karya-ilmiah.detail', compact('artikel_dosen', 'dosen', 'kategori_tingkat', 'list_dosen'));
+        $dosen_id_test = DB::table('dosen')->where('dosen.user_id', Auth::user()->kode_ps)->get();
+        // return view('admin.luaran.karya-ilmiah.detail', compact('artikel_dosen', 'dosen', 'kategori_tingkat', 'list_dosen'));
+        return view('admin.luaran.karya-ilmiah.detail', compact('artikel_dosen', 'list_dosen'));
     }
 
     public function create_detail($dosen_id)

@@ -58,9 +58,9 @@
                                         <td>{{ $value->page }}</td>
                                         <td>{{ $value->issue }}</td>
                                         <td>{{ $value->publisher }}</td>
-                                        <td>{{ $value->kategori_tingkat['nama_kategori']}}</td>
+                                        <td>{{ $value->kategori_tingkat['nama_kategori'] ?? ''}}</td>
                                         <td>{{ $value->jumlah ?? '0'}}</td>
-                                        <td>{{ $value->publikasi['jenis_publikasi']}}</td>
+                                        <td>{{ $value->publikasi['jenis_publikasi'] ?? ''}}</td>
                                         <td>{{ $value->tahun }}</td>
                                         <td><a href="{{ asset('file/'.$value->softcopy) }}" target="_blank">Detail</a></td>
                                         <td>
