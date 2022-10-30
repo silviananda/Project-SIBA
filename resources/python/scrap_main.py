@@ -5,13 +5,14 @@ import re
 import time
 import random
 import json
-# import sys
+import sys
 
 #mulai proses request link
 total_data = 0
 no_data_list = []
 links = []
-link = "https://scholar.google.com/citations?user=qvbW_WoAAAAJ&hl=en&authuser=1"
+link = sys.argv[1]
+# link = "https://scholar.google.com/citations?user=qvbW_WoAAAAJ&hl=en&authuser=1"
 
 
 if (link.find('hl=id') != -1):
@@ -58,7 +59,7 @@ while (True):
             #dict_data["Faculty"] = fakultas
             dict_data["Document"] = 'None'
             #dict_data["Cited By"] = 'None'
-            dict_data["Year"] = 'Non'
+            dict_data["Year"] = 'None'
             dict_data['Link Detail Title'] = 'None'
 
             break

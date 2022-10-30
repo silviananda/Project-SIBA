@@ -50,11 +50,13 @@
                                     <th scope="row"> {{ $loop->iteration }}</th>
                                     <td>{{ $value->nip}}</td>
                                     <td>{{ $value->nama_dosen}}</td>
-                                    <td><a href="{{ $value->link_scholar}}" target="_blank">{{ $value->link_scholar ?? "-"}}</a></td>
+                                    <td><a href="{{ $value->link_scholar}}" target="_blank">{{ $value->link_scholar ?? "-" }}</a></td>
 
                                     <td>
                                         <form action={{ route('luaran.karya-ilmiah.run') }} method="post">
                                             @csrf
+                                            <input type="hidden"  name="link" value=" {{ $value->link_scholar ?? '-' }}">
+                                            <input type="hidden"  name="dosen_id" value=" {{ $value->dosen_id ?? '-' }}">
                                             <button type="submit" class="btn btn-round btn-info btn-sm">scrap</button>
                                         </form>
                                     </td>
