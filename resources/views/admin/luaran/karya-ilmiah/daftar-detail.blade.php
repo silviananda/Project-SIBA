@@ -31,44 +31,58 @@
                     <div class="row">
 
                         <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                            <table id="datatable-fixed-header" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Publication Date</th>
-                                    <th>Document Type</th>
-                                    <th>Authors</th>
-                                    <th>Name of Document Type</th>
-                                    <th>Volume</th>
-                                    <th>Issue</th>
-                                    <th>Pages</th>
-                                    <th>Publisher</th>
-                                    <th>Description</th>
-                                    <th>Total Citations</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach ( $dict_detail_title as $row )
+                            <p><i>Data yang telah ada di database tidak dapat dipilih</i></p>
+                            <form action={{ route('luaran.karya-ilmiah.submit') }} method="post">
+                                            @csrf
+                                            
+                                <div class="card-box table-responsive">
+                                <table id="datatable-fixed-header" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
                                     <tr>
-                                        <th scope="row"> {{ $loop->iteration }}</th>
-                                        
-                                        @foreach ($row as $key => $val)
-                                            <td>
-                                            @if (is_array($val))
-                                                @foreach($val as $v)
-                                                    {{ $v }}
-                                                @endforeach
+                                        <th>Pilih</th>
+                                        <th>No</th>
+                                        <th>Name</th>
+                                        <th>Title</th>
+                                        <th>Publication Date</th>
+                                        <th>Document Type</th>
+                                        <th>Authors</th>
+                                        <th>Name of Document Type</th>
+                                        <th>Volume</th>
+                                        <th>Issue</th>
+                                        <th>Pages</th>
+                                        <th>Publisher</th>
+                                        <th>Description</th>
+                                        <th>Total Citations</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ( $dict_detail_title ?? '' as $row )
+                                        <tr>
+                                            @if (!$row->in_db)
+                                                <td><input type="checkbox" name="artikel[{{ $loop->iteration }}]"></td>
                                             @else
-                                                {{ $val }}
+                                                <td></td>
                                             @endif
-                                            </td>
-                                        @endforeach
-                                    <tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                            <th scope="row"> {{ $loop->iteration }}</th>
+                                            <td><input type="hidden" name="nama[]" value="{{ $row->nama }}">{{ $row->nama }}</td>
+                                            <td><input type="hidden" name="judul[]" value="{{ $row->judul }}">{{ $row->judul }}</td>
+                                            <td><input type="hidden" name="tahun[]" value="{{ $row->tahun }}">{{ $row->tahun }}</td>
+                                            <td><input type="hidden" name="doc_type[]" value="{{ $row->doc_type }}">{{ $row->doc_type }}</td>
+                                            <td><input type="hidden" name="authors[]" value="{{ $row->authors }}">{{ $row->authors }}</td>
+                                            <td><input type="hidden" name="name_of_doctype[]" value="{{ $row->name_of_doctype }}">{{ $row->name_of_doctype }}</td> 
+                                            <td><input type="hidden" name="volume[]" value="{{ $row->volume }}">{{ $row->volume }}</td> 
+                                            <td><input type="hidden" name="issue[]" value="{{ $row->issue }}">{{ $row->issue }}</td> 
+                                            <td><input type="hidden" name="pages[]" value="{{ $row->pages }}">{{ $row->pages }}</td> 
+                                            <td><input type="hidden" name="publisher[]" value="{{ $row->publisher }}">{{ $row->publisher }}</td> 
+                                            <td><input type="hidden" name="description[]" value="{{ $row->description }}">{{ $row->description }}</td> 
+                                            <td><input type="hidden" name="total_citation[]" value="{{ $row->total_citation }}">{{ $row->total_citation }}</td> 
+                                        <tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                                <input type="hidden" name="dosen_id" value="{{ $dosen_id }}">
+                                <button type="submit" class="btn btn-round btn-info btn-sm">SUBMIT</button>
+                            </form>
                         </div>
                     </div> 
 
